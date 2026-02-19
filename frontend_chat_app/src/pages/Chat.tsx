@@ -153,9 +153,9 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <div className="flex min-h-[60vh] rounded-xl shadow-lg overflow-hidden bg-white/90 border border-gray-200">
+    <div className="chat-root flex min-h-[60vh] rounded-xl shadow-lg overflow-hidden bg-white border border-gray-200">
       {/* Sidebar */}
-      <aside className="w-72 flex flex-col gap-6 p-6 bg-gradient-to-b from-indigo-100 to-white border-r border-gray-200">
+      <aside className="w-72 flex flex-col gap-6 p-6 bg-gray-50 border-r border-gray-200">
         <div className="flex items-center gap-3">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg ${userId ? avatarColor(userId) : "bg-gray-300"}`}
@@ -175,17 +175,34 @@ export default function Chat() {
             {users.map((u) => (
               <button
                 key={u._id}
-                className={`flex items-center gap-2 px-2 py-1 rounded hover:bg-indigo-100 transition text-left ${otherId === u._id ? "bg-indigo-200" : ""}`}
+                className={`sidebar-user w-full text-left transition ${otherId === u._id ? "sidebar-user--selected" : ""}`}
                 onClick={() => {
                   setOtherId(u._id);
                   loadHistory();
                 }}
               >
-                <span
-                  className={`w-3 h-3 rounded-full ${online.includes(u._id) ? "bg-green-400" : "bg-gray-300"} inline-block`}
-                />
-                <span className="font-mono text-xs">{u._id.slice(0, 6)}…</span>
-                <span className="text-xs text-gray-700">{u.email}</span>
+                <div className="w-full flex items-center">
+                  <div className="flex-shrink-0">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${avatarColor(u._id)}`}
+                    >
+                      {u._id[0]?.toUpperCase()}
+                    </div>
+                  </div>
+                  <div className="sidebar-user__meta ml-3 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="sidebar-user__title">{u.email}</div>
+                      <div className="text-xs text-gray-400">
+                        {online.includes(u._id) ? "Online" : ""}
+                      </div>
+                    </div>
+                    <div className="sidebar-user__snippet">
+                      <span className="inline-block align-top">
+                        {online.includes(u._id) ? "Available" : "Tap to chat"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </button>
             ))}
           </div>
@@ -200,7 +217,7 @@ export default function Chat() {
       <section className="flex-1 flex flex-col">
         <div
           ref={scrollRef}
-          className="flex-1 p-6 overflow-auto space-y-4 bg-gradient-to-b from-white to-indigo-50"
+          className="flex-1 p-6 overflow-auto space-y-4 bg-white"
         >
           {messages.length === 0 && (
             <div className="text-center text-gray-400 mt-10">
@@ -210,7 +227,7 @@ export default function Chat() {
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`flex items-end gap-2 ${m.senderId === userId ? "justify-end" : "justify-start"}`}
+              className={`flex items-end gap-3 ${m.senderId === userId ? "justify-end" : "justify-start"}`}
             >
               {m.senderId !== userId && (
                 <div
@@ -219,7 +236,11 @@ export default function Chat() {
                   {m.senderId[0]?.toUpperCase()}
                 </div>
               )}
-              <div>
+
+              {/* content wrapper controls bubble width responsively */}
+              <div
+                className={`max-w-[92%] sm:max-w-[85%] md:max-w-[72%] lg:max-w-[60%]`}
+              >
                 <MessageBubble text={m.text} mine={m.senderId === userId} />
                 <div className="text-[10px] text-gray-400 mt-1 text-right pr-1">
                   {new Date(m.createdAt).toLocaleTimeString([], {
@@ -228,6 +249,7 @@ export default function Chat() {
                   })}
                 </div>
               </div>
+
               {m.senderId === userId && (
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${avatarColor(m.senderId)}`}

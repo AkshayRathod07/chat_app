@@ -11,9 +11,7 @@ export default function MessageBubble({
 }: MessageBubbleProps) {
   return (
     <div
-      className={`max-w-[70%] whitespace-pre-wrap rounded-lg px-3 py-2 ${
-        mine ? "bg-indigo-100 self-end" : "bg-gray-100 self-start"
-      }`}
+      className={`msg-bubble ${mine ? "msg-bubble--mine" : "msg-bubble--other"} w-full`}
     >
       {text}
     </div>

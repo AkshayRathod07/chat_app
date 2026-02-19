@@ -16,5 +16,9 @@ const MessageSchema: Schema = new Schema<IMessage>(
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
+// Indexes to support queries that fetch messages between two users and paginate by createdAt
+MessageSchema.index({ senderId: 1, receiverId: 1, createdAt: 1 });
+MessageSchema.index({ receiverId: 1, senderId: 1, createdAt: 1 });
+
 const Message = mongoose.model<IMessage>("Message", MessageSchema);
 export default Message;

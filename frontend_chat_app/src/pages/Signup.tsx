@@ -28,7 +28,9 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-4">Create an account</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Create an account
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-sm text-gray-600 mb-1">Email</label>
